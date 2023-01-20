@@ -1,4 +1,54 @@
 <template>
+    <div class="flex flex-col flex-1 items-center">
+      <p>Temperature: {{ temperature }}</p>
+      <p>Humidity: {{ humidity }}</p>
+    </div>
+  </template>
+  
+  <script>
+  import axios from 'axios'
+  
+  export default {
+    data() {
+      return {
+        APIKey: "8bff1b1000a5af02a04e2eec8777eec0",
+        city: "Austin",
+        temperature: null,
+        humidity: null
+      }
+    },
+    mounted() {
+      this.getWeatherData()
+    },
+    methods: {
+      async getWeatherData() {
+        try {
+          const response = await axios.get(
+            `https://api.openweathermap.org/data/2.5/weather?q=${this.city}&appid=${this.APIKey}&units=imperial`
+          )
+          this.temperature = response.data.main.temp
+          this.humidity = response.data.main.humidity
+          // cal current date & time
+            const localOffset = new Date().getTimezoneOffset() * 60000;
+            const utc = weatherData.data.current.dt * 1000 + localOffset;
+            weatherData.data.currentTime =
+                utc + 1000 * weatherData.data.timezone_offset;
+            // cal hourly weather offset
+            weatherData.data.hourly.forEach((hour) => {
+            const utc = hour.dt * 1000 + localOffset;
+            hour.currentTime =
+                utc + 1000 * weatherData.data.timezone_offset;
+            });
+        } catch (error) {
+          console.error(error)
+        }
+        
+      }
+    }
+  }
+  </script>
+
+<!-- <template>
     <main class="container text-white">
         <div class="pt-4 mb-8 relative">
             <input 
@@ -63,4 +113,4 @@ const getSearchResults = () => {
         mapboxSearchResults.value = null
     }, 300);
 };
-</script>
+</script> -->
